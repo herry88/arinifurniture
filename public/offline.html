@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#C8A35F">
+    <title>Arini Furniture - Offline</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2C1810 0%, #1a0f0a 50%, #2C1810 100%);
+            color: #F5F0EB;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(200, 163, 95, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(200, 163, 95, 0.03) 0%, transparent 50%);
+            animation: subtleFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes subtleFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-2%, -1%); }
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+        }
+
+        /* Offline icon with pulse animation */
+        .offline-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .offline-icon::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(200, 163, 95, 0.2), rgba(200, 163, 95, 0.05));
+            animation: pulse-ring 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        .offline-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 20px rgba(200, 163, 95, 0.3));
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #C8A35F, #E8D5A8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(245, 240, 235, 0.7);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .retry-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, #C8A35F, #A88840);
+            color: #2C1810;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(200, 163, 95, 0.3);
+            letter-spacing: 0.025em;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(200, 163, 95, 0.4);
+            background: linear-gradient(135deg, #D4B06A, #B8994A);
+        }
+
+        .retry-btn:active {
+            transform: translateY(0);
+        }
+
+        .retry-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .retry-btn:hover svg {
+            transform: rotate(180deg);
+        }
+
+        .tips {
+            margin-top: 2.5rem;
+            padding: 1.25rem;
+            background: rgba(200, 163, 95, 0.06);
+            border: 1px solid rgba(200, 163, 95, 0.12);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tips h3 {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #C8A35F;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tips ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .tips li {
+            font-size: 0.8125rem;
+            color: rgba(245, 240, 235, 0.55);
+            padding: 0.375rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .tips li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: rgba(200, 163, 95, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-icon">
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="56" stroke="#C8A35F" stroke-width="2" stroke-opacity="0.3"/>
+                <circle cx="60" cy="60" r="48" fill="rgba(200,163,95,0.08)"/>
+                <!-- WiFi Off Icon -->
+                <path d="M60 82C62.2091 82 64 80.2091 64 78C64 75.7909 62.2091 74 60 74C57.7909 74 56 75.7909 56 78C56 80.2091 57.7909 82 60 82Z" fill="#C8A35F"/>
+                <path d="M38 58C43.8 53.4 51.6 50.6 60 50.6C68.4 50.6 76.2 53.4 82 58" stroke="#C8A35F" stroke-width="3" stroke-linecap="round" stroke-opacity="0.5"/>
+                <path d="M46 65C49.6 62.4 54.6 60.6 60 60.6C65.4 60.6 70.4 62.4 74 65" stroke="#C8A35F" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+                <!-- Cross line -->
+                <line x1="38" y1="46" x2="82" y2="86" stroke="#C8A35F" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <h1>Anda Sedang Offline</h1>
+        <p class="subtitle">
+            Koneksi internet terputus. Silakan periksa koneksi Anda dan coba lagi untuk menjelajahi koleksi furniture kami.
+        </p>
+
+        <button class="retry-btn" onclick="window.location.reload()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Coba Lagi
+        </button>
+
+        <div class="tips">
+            <h3>Tips Koneksi</h3>
+            <ul>
+                <li>Periksa koneksi WiFi atau data seluler Anda</li>
+                <li>Coba aktifkan mode pesawat lalu matikan kembali</li>
+                <li>Halaman yang pernah dikunjungi tersedia secara offline</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

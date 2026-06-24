@@ -1,0 +1,197 @@
+<!--begin::Script-->
+<!--begin::Third Party Plugin(OverlayScrollbars)-->
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+    crossorigin="anonymous"></script>
+<!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous">
+</script>
+<!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+<script src="{{ asset('admin/js/adminlte.js') }}"></script>
+<!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+<script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+        scrollbarTheme: 'os-theme-light',
+        scrollbarAutoHide: 'leave',
+        scrollbarClickScroll: true,
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+
+        // Disable OverlayScrollbars on mobile devices to prevent touch interference
+        const isMobile = window.innerWidth <= 992;
+
+        if (
+            sidebarWrapper &&
+            OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+            !isMobile
+        ) {
+            OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                scrollbars: {
+                    theme: Default.scrollbarTheme,
+                    autoHide: Default.scrollbarAutoHide,
+                    clickScroll: Default.scrollbarClickScroll,
+                },
+            });
+        }
+    });
+</script>
+<!--end::OverlayScrollbars Configure--><!--begin::Color Mode Toggle (#6010)-->
+<script>
+    (() => {
+        'use strict';
+
+        const STORAGE_KEY = 'lte-theme';
+
+        const getStoredTheme = () => localStorage.getItem(STORAGE_KEY);
+        const setStoredTheme = (theme) => localStorage.setItem(STORAGE_KEY, theme);
+
+        const prefersDark = () => globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        const getPreferredTheme = () => {
+            const stored = getStoredTheme();
+            if (stored) return stored;
+            return prefersDark() ? 'dark' : 'light';
+        };
+
+        const setTheme = (theme) => {
+            const resolved = theme === 'auto' ? (prefersDark() ? 'dark' : 'light') : theme;
+            document.documentElement.setAttribute('data-bs-theme', resolved);
+        };
+
+        setTheme(getPreferredTheme());
+
+        const showActiveTheme = (theme) => {
+            // Highlight the active dropdown option
+            document.querySelectorAll('[data-bs-theme-value]').forEach((el) => {
+                el.classList.remove('active');
+                el.setAttribute('aria-pressed', 'false');
+                const check = el.querySelector('.bi-check-lg');
+                if (check) check.classList.add('d-none');
+            });
+            const active = document.querySelector(`[data-bs-theme-value="${theme}"]`);
+            if (active) {
+                active.classList.add('active');
+                active.setAttribute('aria-pressed', 'true');
+                const check = active.querySelector('.bi-check-lg');
+                if (check) check.classList.remove('d-none');
+            }
+            // Sync the topbar trigger icon
+            document.querySelectorAll('[data-lte-theme-icon]').forEach((icon) => {
+                icon.classList.toggle('d-none', icon.dataset.lteThemeIcon !== theme);
+            });
+        };
+
+        globalThis.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            const stored = getStoredTheme();
+            if (!stored || stored === 'auto') setTheme(getPreferredTheme());
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showActiveTheme(getPreferredTheme());
+            document.querySelectorAll('[data-bs-theme-value]').forEach((toggle) => {
+                toggle.addEventListener('click', () => {
+                    const theme = toggle.getAttribute('data-bs-theme-value');
+                    setStoredTheme(theme);
+                    setTheme(theme);
+                    showActiveTheme(theme);
+                });
+            });
+        });
+    })();
+</script>
+<!--end::Color Mode Toggle-->
+
+<!-- apexcharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+    integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+<!-- Revenue Chart (only on dashboard) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartEl = document.querySelector('#revenue-chart');
+        if (chartEl && typeof ApexCharts !== 'undefined') {
+            const sales_chart_options = {
+                series: [{
+                        name: 'Pendapatan (Rp)',
+                        data: {!! json_encode($monthlyRevenue ?? []) !!},
+                    },
+                    {
+                        name: 'Jumlah Pesanan',
+                        data: {!! json_encode($monthlyOrders ?? []) !!},
+                    },
+                ],
+                chart: {
+                    height: 300,
+                    type: 'area',
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                legend: {
+                    show: true,
+                    position: 'top',
+                },
+                colors: ['#0d6efd', '#20c997'],
+                dataLabels: {
+                    enabled: false,
+                },
+                stroke: {
+                    curve: 'smooth',
+                },
+                xaxis: {
+                    type: 'datetime',
+                    categories: {!! json_encode($monthLabels ?? []) !!},
+                },
+                yaxis: [{
+                    title: {
+                        text: 'Pendapatan (Rp)',
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+                        }
+                    }
+                }, {
+                    opposite: true,
+                    title: {
+                        text: 'Jumlah Pesanan',
+                    },
+                }],
+                tooltip: {
+                    x: {
+                        format: 'MMMM yyyy',
+                    },
+                },
+            };
+
+            const sales_chart = new ApexCharts(chartEl, sales_chart_options);
+            sales_chart.render();
+        }
+    });
+</script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+        });
+    @endif
+</script>
+<!--end::Script-->
