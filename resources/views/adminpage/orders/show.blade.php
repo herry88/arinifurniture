@@ -75,15 +75,12 @@
                         @if($order->shippingAddress)
                         <dl class="row mb-0">
                             <dt class="col-sm-3">Penerima</dt>
-                            <dd class="col-sm-9">{{ $order->shippingAddress->recipient_name }} ({{ $order->shippingAddress->phone }})</dd>
+                            <dd class="col-sm-9">{{ $order->shippingAddress->recipient_name }} ({{ $order->shippingAddress->phone_number }})</dd>
 
                             <dt class="col-sm-3">Alamat Lengkap</dt>
                             <dd class="col-sm-9">
-                                {{ $order->shippingAddress->address_line1 }}<br>
-                                @if($order->shippingAddress->address_line2)
-                                {{ $order->shippingAddress->address_line2 }}<br>
-                                @endif
-                                {{ $order->shippingAddress->city_id }} - {{ $order->shippingAddress->province_id }}<br>
+                                {{ $order->shippingAddress->address_detail }}<br>
+                                {{ $order->shippingAddress->city_name }} - {{ $order->shippingAddress->province_name }}<br>
                                 Kode Pos: {{ $order->shippingAddress->postal_code }}
                             </dd>
 

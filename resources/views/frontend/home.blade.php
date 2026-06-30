@@ -138,582 +138,136 @@
                         consectetur faucibus. Praesent aliquam, lec tempus consequat, felis quam venenatis ligula
                     </p>
                     <ul class="room nav nav-tabs">
-                        <li class="room-box active">
-                            <a data-toggle="tab" href="#living-room" class="smooth" title="">
-                                <img src="{{ asset('frontend/image/catalog/demo/slider/home1/room.png') }}"
-                                    alt="">
-                                <h5 class="room-title">LIVING ROOM</h5>
-                            </a>
-                        </li>
-                        <li class="room-box">
-                            <a data-toggle="tab" href="#kitchen" class="smooth" title="">
-                                <img src="{{ asset('frontend/image/catalog/demo/slider/home1/room2.png') }}"
-                                    alt="">
-                                <h5 class="room-title">kitchen</h5>
-                            </a>
-                        </li>
-                        <li class="room-box">
-                            <a data-toggle="tab" href="#work-palce" class="smooth" title="">
-                                <img src="{{ asset('frontend/image/catalog/demo/slider/home1/room3.png') }}"
-                                    alt="">
-                                <h5 class="room-title">WORK PLACE</h5>
-                            </a>
-                        </li>
-                        <li class="room-box">
-                            <a data-toggle="tab" href="#wordrobe" class="smooth" title="">
-                                <img src="{{ asset('frontend/image/catalog/demo/slider/home1/room4.png') }}"
-                                    alt="">
-                                <h5 class="room-title">WORDROBE</h5>
-                            </a>
-                        </li>
+                        @if(isset($dealCategories) && $dealCategories->count() > 0)
+                            @foreach($dealCategories as $catIndex => $dealCat)
+                                <li class="room-box {{ $catIndex === 0 ? 'active' : '' }}">
+                                    <a data-toggle="tab" href="#deal-cat-{{ $dealCat->id }}" class="smooth" title="">
+                                        @if($dealCat->image)
+                                            <img src="{{ asset('storage/' . $dealCat->image) }}" alt="{{ $dealCat->name }}">
+                                        @else
+                                            <img src="{{ asset('frontend/image/catalog/demo/slider/home1/room.png') }}" alt="{{ $dealCat->name }}">
+                                        @endif
+                                        <h5 class="room-title">{{ strtoupper($dealCat->name) }}</h5>
+                                    </a>
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="room-box active">
+                                <a data-toggle="tab" href="#deal-cat-all" class="smooth" title="">
+                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/room.png') }}" alt="">
+                                    <h5 class="room-title">ALL PRODUCTS</h5>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
             </div>
 
             <div class="tab-content">
-                <div id="living-room" class="tab-pane fade in active">
-                    <div class="deals-center deals-center-slider">
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/12/15">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="detail.html" class="hv-light">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name">
-                                    <a href="detail.html" class="smooth" title="">Donec vel venenatis</a>
-                                </h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
+                @if(isset($dealCategories) && $dealCategories->count() > 0)
+                    @foreach($dealCategories as $catIndex => $dealCat)
+                        <div id="deal-cat-{{ $dealCat->id }}" class="tab-pane fade {{ $catIndex === 0 ? 'in active' : '' }}">
+                            <div class="deals-center deals-center-slider">
+                                @foreach($dealCat->dealProducts as $product)
+                                    @php
+                                        $image = $product->galleries->first()
+                                            ? asset('storage/' . $product->galleries->first()->image)
+                                            : asset('frontend/image/catalog/demo/slider/home1/product.png');
+                                        $productUrl = route('product.show', $product->slug);
+                                    @endphp
+                                    <div class="deals-slider">
+                                        <div class="left-group">
+                                            <div class="table-countdown" data-countdown="{{ now()->addDays(7)->format('Y/m/d') }}">
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="product-image">
+                                                <a href="{{ $productUrl }}" class="hv-light">
+                                                    <img src="{{ $image }}" alt="{{ $product->name }}">
+                                                </a>
+                                            </div>
+                                            <h5 class="product-name">
+                                                <a href="{{ $productUrl }}" class="smooth" title="">{{ $product->name }}</a>
+                                            </h5>
+                                            <div class="price">
+                                                Rp {{ number_format($product->discount_price, 0, ',', '.') }}
+                                                <span class="price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                            </div>
+                                            <div class="rating">
+                                                <div class="rating-box">
+                                                    @for($s = 1; $s <= 5; $s++)
+                                                        <span class="fa fa-stack">
+                                                            @if($s <= 4)
+                                                                <i class="fa fa-star fa-stack-1x"></i>
+                                                                <i class="fa fa-star-o fa-stack-1x"></i>
+                                                            @else
+                                                                <i class="fa fa-star-o fa-stack-1x"></i>
+                                                            @endif
+                                                        </span>
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <span class="label-sale">NEW!</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <span class="label-sale">
-                                    NEW!
-                                </span>
+                                @endforeach
                             </div>
                         </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2020/01/01">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
+                    @endforeach
+                @else
+                    <div id="deal-cat-all" class="tab-pane fade in active">
+                        <div class="deals-center deals-center-slider">
+                            @forelse($discountProducts->take(3) as $product)
+                                @php
+                                    $image = $product->galleries->first()
+                                        ? asset('storage/' . $product->galleries->first()->image)
+                                        : asset('frontend/image/catalog/demo/slider/home1/product.png');
+                                    $productUrl = route('product.show', $product->slug);
+                                @endphp
+                                <div class="deals-slider">
+                                    <div class="left-group">
+                                        <div class="table-countdown" data-countdown="{{ now()->addDays(7)->format('Y/m/d') }}">
+                                        </div>
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-image">
+                                            <a href="{{ $productUrl }}" class="hv-light">
+                                                <img src="{{ $image }}" alt="{{ $product->name }}">
+                                            </a>
+                                        </div>
+                                        <h5 class="product-name">
+                                            <a href="{{ $productUrl }}" class="smooth" title="">{{ $product->name }}</a>
+                                        </h5>
+                                        <div class="price">
+                                            Rp {{ number_format($product->discount_price, 0, ',', '.') }}
+                                            <span class="price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        </div>
+                                        <div class="rating">
+                                            <div class="rating-box">
+                                                @for($s = 1; $s <= 5; $s++)
+                                                    <span class="fa fa-stack">
+                                                        @if($s <= 4)
+                                                            <i class="fa fa-star fa-stack-1x"></i>
+                                                            <i class="fa fa-star-o fa-stack-1x"></i>
+                                                        @else
+                                                            <i class="fa fa-star-o fa-stack-1x"></i>
+                                                        @endif
+                                                    </span>
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <span class="label-sale">NEW!</span>
                                     </div>
                                 </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/11/11">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
+                            @empty
+                                <p class="text-center">Belum ada produk promo.</p>
+                            @endforelse
                         </div>
                     </div>
-                </div>
-
-                <div id="kitchen" class="tab-pane fade">
-                    <div class="deals-center deals-center-slider">
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/12/15">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="detail.html" class="hv-light">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name">
-                                    <a href="detail.html" class="smooth" title="">Donec vel venenatis</a>
-                                </h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <span class="label-sale">
-                                    NEW!
-                                </span>
-                            </div>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2020/01/01">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/11/11">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="work-palce" class="tab-pane fade">
-                    <div class="deals-center deals-center-slider">
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/12/15">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="detail.html" class="hv-light">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name">
-                                    <a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a>
-                                </h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <span class="label-sale">
-                                    NEW!
-                                </span>
-                            </div>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2020/01/01">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/11/11">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="wordrobe" class="tab-pane fade">
-                    <div class="deals-center deals-center-slider">
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/12/15">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="detail.html" class="hv-light">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name">
-                                    <a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a>
-                                </h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <span class="label-sale">
-                                    NEW!
-                                </span>
-                            </div>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2020/01/01">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                        <div class="deals-slider">
-                            <div class="left-group">
-                                <div class="table-countdown" data-countdown="2019/11/11">
-                                </div>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-image">
-                                    <a href="#" class="">
-                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/product.png') }}"
-                                            alt="">
-                                    </a>
-                                </div>
-                                <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                        venenatis</a></h5>
-                                <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                                <div class="rating">
-                                    <div class="rating-box">
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star fa-stack-1x"></i>
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                        <span class="fa fa-stack">
-                                            <i class="fa fa-star-o fa-stack-1x"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="label-sale">
-                                NEW!
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
+                @endif
             </div>
+
+
 
 
             <div class="deals-left deals-right">
@@ -721,117 +275,93 @@
                     popular <span>product</span>
                 </h4>
                 <div class="deals-right-desc">
-                    <div class="deals-box product-info clearfix">
-                        <div class="product-image-right">
-                            <a href="detail.html" class="hv-radial">
-                                <img src="{{ asset('frontend/image/catalog/demo/products/product35.png') }}"
-                                    alt="">
-                            </a>
-                        </div>
-                        <div class="box">
-                            <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                    venenatis</a></h5>
-                            <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                            <div class="rating">
-                                <div class="rating-box">
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
+                    @if(isset($popularProducts) && $popularProducts->count() > 0)
+                        @foreach($popularProducts as $product)
+                            @php
+                                $image = $product->galleries->first()
+                                    ? asset('storage/' . $product->galleries->first()->image)
+                                    : asset('frontend/image/catalog/demo/products/product35.png');
+                                $productUrl = route('product.show', $product->slug);
+                            @endphp
+                            <div class="deals-box product-info clearfix">
+                                <div class="product-image-right">
+                                    <a href="{{ $productUrl }}" class="hv-radial">
+                                        <img src="{{ $image }}" alt="{{ $product->name }}">
+                                    </a>
+                                </div>
+                                <div class="box">
+                                    <h5 class="product-name">
+                                        <a href="{{ $productUrl }}" class="smooth" title="">{{ $product->name }}</a>
+                                    </h5>
+                                    <div class="price">
+                                        @if($product->discount_price)
+                                            Rp {{ number_format($product->discount_price, 0, ',', '.') }}
+                                            <span class="price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        @else
+                                            Rp {{ number_format($product->price, 0, ',', '.') }}
+                                        @endif
+                                    </div>
+                                    <div class="rating">
+                                        <div class="rating-box">
+                                            @for($s = 1; $s <= 5; $s++)
+                                                <span class="fa fa-stack">
+                                                    @if($s <= 4)
+                                                        <i class="fa fa-star fa-stack-1x"></i>
+                                                        <i class="fa fa-star-o fa-stack-1x"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o fa-stack-1x"></i>
+                                                    @endif
+                                                </span>
+                                            @endfor
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="deals-box product-info clearfix">
-                        <div class="product-image-right">
-                            <a href="detail.html" class="hv-radial">
-                                <img src="{{ asset('frontend/image/catalog/demo/products/product36.png') }}"
-                                    alt="">
-                            </a>
-                        </div>
-                        <div class="box">
-                            <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                    venenatis</a></h5>
-                            <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                            <div class="rating">
-                                <div class="rating-box">
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-
+                        @endforeach
+                    @else
+                        @foreach($featuredProducts->take(3) as $product)
+                            @php
+                                $image = $product->galleries->first()
+                                    ? asset('storage/' . $product->galleries->first()->image)
+                                    : asset('frontend/image/catalog/demo/products/product35.png');
+                                $productUrl = route('product.show', $product->slug);
+                            @endphp
+                            <div class="deals-box product-info clearfix">
+                                <div class="product-image-right">
+                                    <a href="{{ $productUrl }}" class="hv-radial">
+                                        <img src="{{ $image }}" alt="{{ $product->name }}">
+                                    </a>
+                                </div>
+                                <div class="box">
+                                    <h5 class="product-name">
+                                        <a href="{{ $productUrl }}" class="smooth" title="">{{ $product->name }}</a>
+                                    </h5>
+                                    <div class="price">
+                                        @if($product->discount_price)
+                                            Rp {{ number_format($product->discount_price, 0, ',', '.') }}
+                                            <span class="price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        @else
+                                            Rp {{ number_format($product->price, 0, ',', '.') }}
+                                        @endif
+                                    </div>
+                                    <div class="rating">
+                                        <div class="rating-box">
+                                            @for($s = 1; $s <= 5; $s++)
+                                                <span class="fa fa-stack">
+                                                    @if($s <= 4)
+                                                        <i class="fa fa-star fa-stack-1x"></i>
+                                                        <i class="fa fa-star-o fa-stack-1x"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o fa-stack-1x"></i>
+                                                    @endif
+                                                </span>
+                                            @endfor
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="deals-box product-info clearfix">
-                        <div class="product-image-right">
-                            <a href="detail.html" class="hv-radial">
-                                <img src="{{ asset('frontend/image/catalog/demo/products/product37.png') }}"
-                                    alt="">
-                            </a>
-                        </div>
-                        <div class="box">
-                            <h5 class="product-name"><a href="detail.html" class="smooth" title="">Donec vel
-                                    venenatis</a></h5>
-                            <div class="price">$115.00 <span class="price-old">$142.00</span></div>
-                            <div class="rating">
-                                <div class="rating-box">
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star fa-stack-1x"></i>
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-                                    <span class="fa fa-stack">
-                                        <i class="fa fa-star-o fa-stack-1x"></i>
-                                    </span>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                        @endforeach
+                    @endif
                 </div>
             </div>
 
@@ -879,7 +409,8 @@
                                             <div class="item wow fadeInUp">
                                                 <div class="product-box">
                                                     <div class="product-image">
-                                                        <a href="#" class="c-img link-product">
+                                                        <a href="{{ route('product.show', $product->slug) }}"
+                                                            class="c-img link-product">
                                                             @if ($product->galleries->count() > 0)
                                                                 <img src="{{ asset('storage/' . $product->galleries->first()->image) }}"
                                                                     class="img-responsive" alt="{{ $product->name }}">
@@ -889,16 +420,26 @@
                                                             @endif
                                                         </a>
                                                         <a class="smooth quickview iframe-link btn-button quickview quickview_handler visible-lg"
-                                                            href="#" title="Quick view" target="_self"
+                                                            href="{{ route('product.show', $product->slug) }}"
+                                                            title="Lihat Detail" target="_self"
                                                             data-fancybox-type="iframe">
                                                             <i class="fa fa-search" aria-hidden="true"></i>
                                                         </a>
                                                     </div>
                                                     <div class="product-info">
-                                                        <h4 class="product-name"><a href="#" class="smooth"
-                                                                title="">{{ $product->name }}</a></h4>
+                                                        <h4 class="product-name"><a
+                                                                href="{{ route('product.show', $product->slug) }}"
+                                                                class="smooth" title="">{{ $product->name }}</a>
+                                                        </h4>
                                                         <div class="price">
-                                                            Rp. {{ number_format($product->price, 0, ',', '.') }}
+                                                            @if ($product->discount_price)
+                                                                Rp.
+                                                                {{ number_format($product->discount_price, 0, ',', '.') }}
+                                                                <span class="price-old">Rp.
+                                                                    {{ number_format($product->price, 0, ',', '.') }}</span>
+                                                            @else
+                                                                Rp. {{ number_format($product->price, 0, ',', '.') }}
+                                                            @endif
                                                         </div>
                                                         <div class="rating">
                                                             <div class="rating-box">
@@ -924,8 +465,15 @@
                                                         <button class="wishlist-btn smooth"
                                                             onclick="window.location.href='#'"><i class="fa fa-retweet"
                                                                 aria-hidden="true"></i></button>
-                                                        <button class="add-to-cart smooth"
-                                                            onclick="window.location.href='#'">ADD TO CART</button>
+                                                        <form action="{{ route('cart.add') }}" method="POST"
+                                                            style="display:inline-block; margin:0;">
+                                                            @csrf
+                                                            <input type="hidden" name="product_id"
+                                                                value="{{ $product->id }}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                            <button type="submit" class="add-to-cart smooth"
+                                                                style="border:none;">ADD TO CART</button>
+                                                        </form>
                                                         <button class="wishlist-btn smooth"
                                                             onclick="window.location.href='#'"><i class="fa fa-heart"
                                                                 aria-hidden="true"></i></button>
@@ -945,9 +493,10 @@
                                             <div id="so_listing_tabs_4" class="so-listing-tabs first-load">
                                                 <div class="ltabs-wrap">
                                                     <div class="ltabs-tabs-container clearfix" data-delay="300"
-                                                        data-duration="600" data-effect="starwars" data-ajaxurl=""
-                                                        data-type_source="0" data-lg="4" data-md="3"
-                                                        data-sm="2" data-xs="2" data-margin="30">
+                                                        data-duration="600" data-effect="starwars"
+                                                        data-ajaxurl="{{ asset('frontend') }}/" data-type_source="0"
+                                                        data-lg="4" data-md="3" data-sm="2" data-xs="2"
+                                                        data-margin="30">
                                                         <!--Begin Tabs-->
                                                         <div class="ltabs-tabs-wrap">
                                                             <span class="ltabs-tab-selected"></span>
@@ -998,11 +547,22 @@
                                                                                                 {{ number_format($product->price, 0, ',', '.') }}
                                                                                             </div>
                                                                                             <div class="button-group">
-                                                                                                <button
-                                                                                                    class="add-to-cart smooth"
-                                                                                                    onclick="window.location.href='cart.html'">
-                                                                                                    ADD TO CART
-                                                                                                </button>
+                                                                                                <form
+                                                                                                    action="{{ route('cart.add') }}"
+                                                                                                    method="POST"
+                                                                                                    style="display:inline-block; margin:0;">
+                                                                                                    @csrf
+                                                                                                    <input type="hidden"
+                                                                                                        name="product_id"
+                                                                                                        value="{{ $product->id }}">
+                                                                                                    <input type="hidden"
+                                                                                                        name="quantity"
+                                                                                                        value="1">
+                                                                                                    <button type="submit"
+                                                                                                        class="add-to-cart smooth"
+                                                                                                        style="border:none;">ADD
+                                                                                                        TO CART</button>
+                                                                                                </form>
                                                                                                 <button
                                                                                                     class="wishlist-btn smooth"
                                                                                                     onclick="window.location.href='cart.html'">
@@ -1206,129 +766,6 @@
                                         </div>
                                         <!-- //CATEGORY-HOT -->
 
-                                        <!-- LATEST BLOGS -->
-                                        <div class="blogs">
-                                            <div class="container">
-                                                <h3 class="featured-title">
-                                                    <span>
-                                                        LATEST <span>BLOGS</span>
-                                                    </span>
-                                                </h3>
-                                                <div class="blog-slider yt-content-slider" data-autoplay="yes"
-                                                    data-delay="4" data-speed="0.6" data-margin="0"
-                                                    data-items_column00="2" data-items_column0="2" data-items_column1="2"
-                                                    data-items_column2="1" data-items_column3="1" data-items_column4="1"
-                                                    data-arrows="yes" data-pagination="no" data-lazyload="yes"
-                                                    data-loop="yes" data-hoverpause="yes">
-
-                                                    <div class="blog-slider-item">
-                                                        <div class="blog-box clearfix">
-                                                            <div class="blog-image">
-                                                                <a href="detail-blog.html" class="hv-light-v2">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/blog1.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                </a>
-                                                                <div class="post-time">
-                                                                    <span class="post-day">05</span>
-                                                                    <span class="post-month">SEP</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="blog-info">
-                                                                <h5 class="blog-title"><a href="detail-blog.html"
-                                                                        class="smooth" title="">Curabitur lectus
-                                                                        Tincidunt</a></h5>
-                                                                <p class="blog-desc">Aenean vel elit lectus pretium
-                                                                    efficitur. Praesent sollicitudin
-                                                                    odio eget nunc tincidunt, sed faucibus enim tincidunt.
-                                                                </p>
-                                                                <a href="detail-blog.html" class="smooth read-more"
-                                                                    title="">READ MORE<i
-                                                                        class="fa fa-angle-double-right"
-                                                                        aria-hidden="true"></i></a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="blog-box clearfix">
-                                                            <div class="blog-image">
-                                                                <a href="detail-blog.html" class="hv-light-v2">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/blog2.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                </a>
-                                                                <div class="post-time">
-                                                                    <span class="post-day">05</span>
-                                                                    <span class="post-month">SEP</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="blog-info">
-                                                                <h5 class="blog-title"><a href="detail-blog.html"
-                                                                        class="smooth" title="">Curabitur lectus
-                                                                        Tincidunt</a></h5>
-                                                                <p class="blog-desc">Aenean vel elit lectus pretium
-                                                                    efficitur. Praesent sollicitudin
-                                                                    odio eget nunc tincidunt, sed faucibus enim tincidunt.
-                                                                </p>
-                                                                <a href="detail-blog.html" class="smooth read-more"
-                                                                    title="">READ MORE<i
-                                                                        class="fa fa-angle-double-right"
-                                                                        aria-hidden="true"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="blog-slider-item">
-                                                        <div class="blog-box clearfix">
-                                                            <div class="blog-image">
-                                                                <a href="detail-blog.html" class="hv-light-v2">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/blog3.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                </a>
-                                                                <div class="post-time">
-                                                                    <span class="post-day">05</span>
-                                                                    <span class="post-month">SEP</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="blog-info">
-                                                                <h5 class="blog-title"><a href="detail-blog.html"
-                                                                        class="smooth" title="">Curabitur lectus
-                                                                        Tincidunt</a></h5>
-                                                                <p class="blog-desc">Aenean vel elit lectus pretium
-                                                                    efficitur. Praesent sollicitudin
-                                                                    odio eget nunc tincidunt, sed faucibus enim tincidunt.
-                                                                </p>
-                                                                <a href="detail-blog.html" class="smooth read-more"
-                                                                    title="">READ MORE<i
-                                                                        class="fa fa-angle-double-right"
-                                                                        aria-hidden="true"></i></a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="blog-box clearfix">
-                                                            <div class="blog-image">
-                                                                <a href="detail-blog.html" class="hv-light-v2">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/blog4.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                </a>
-                                                                <div class="post-time">
-                                                                    <span class="post-day">05</span>
-                                                                    <span class="post-month">SEP</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="blog-info">
-                                                                <h5 class="blog-title"><a href="detail-blog.html"
-                                                                        class="smooth" title="">Curabitur lectus
-                                                                        Tincidunt</a></h5>
-                                                                <p class="blog-desc">Aenean vel elit lectus pretium
-                                                                    efficitur. Praesent sollicitudin
-                                                                    odio eget nunc tincidunt, sed faucibus enim tincidunt.
-                                                                </p>
-                                                                <a href="detail-blog.html" class="smooth read-more"
-                                                                    title="">READ MORE<i
-                                                                        class="fa fa-angle-double-right"
-                                                                        aria-hidden="true"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- //LATEST BLOGS -->
 
                                         <!-- //CATEGORY-TAB-PRODUCT-SLIDER -->
                                         <div class="category-tab" style="display: none;">
@@ -1336,17 +773,17 @@
                                                 <div id="so_listing_tabs_3" class="so-listing-tabs first-load">
                                                     <div class="ltabs-wrap">
                                                         <div class="ltabs-tabs-container" data-delay="300"
-                                                            data-duration="600" data-effect="starwars" data-ajaxurl=""
-                                                            data-type_source="0" data-lg="4" data-md="3"
-                                                            data-sm="2" data-xs="2" data-margin="30">
+                                                            data-duration="600" data-effect="starwars"
+                                                            data-ajaxurl="{{ asset('frontend') }}/" data-type_source="0"
+                                                            data-lg="4" data-md="3" data-sm="2" data-xs="2"
+                                                            data-margin="30">
                                                             <!--Begin Tabs-->
                                                             <div class="ltabs-tabs-wrap">
                                                                 <span class="ltabs-tab-selected"></span>
                                                                 <span class="ltabs-tab-arrow">▼</span>
                                                                 <div class="item-sub-cat">
                                                                     <ul class="ltabs-tabs cf">
-                                                                        <li class="ltabs-tab tab-sel"
-                                                                            data-category-id="1"
+                                                                        <li class="ltabs-tab tab-sel" data-category-id="1"
                                                                             data-active-content=".brand-1"> <span
                                                                                 class="ltabs-tab-label smooth">Best <span
                                                                                     class="text-style">Seller</span></span>
@@ -1399,181 +836,6 @@
                                         </div>
                                         <!-- //CATEGORY-TAB-PRODUCT-SLIDER -->
 
-                                        <!-- BRAND -->
-                                        <div class="brand">
-                                            <div class="container">
-                                                <div class="cleafix">
-                                                    @if (isset($brands) && $brands->count() > 0)
-                                                        @php
-                                                            $half = ceil($brands->count() / 2);
-                                                            $leftBrands = $brands->slice(0, $half);
-                                                            $rightBrands = $brands->slice($half);
-                                                        @endphp
-                                                        <div class="brand-left">
-                                                            <ul class="nav nav-tabs">
-                                                                <li class="brand-title-box">
-                                                                    <h3 class="brand-title featured-title">
-                                                                        <span>
-                                                                            FEATURED <span>BRANDS</span>
-                                                                        </span>
-                                                                    </h3>
-                                                                </li>
-                                                                @foreach ($leftBrands as $index => $brand)
-                                                                    <li class="{{ $loop->first ? 'active' : '' }}">
-                                                                        <a data-toggle="tab"
-                                                                            href="#brand{{ $brand->id }}">
-                                                                            @if ($brand->logo)
-                                                                                <img src="{{ asset('storage/' . $brand->logo) }}"
-                                                                                    class="img-responsive"
-                                                                                    alt="{{ $brand->name }}">
-                                                                            @else
-                                                                                <span class="text-center"
-                                                                                    style="display:block; padding:15px; font-weight:bold;">{{ $brand->name }}</span>
-                                                                            @endif
-                                                                        </a>
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
-                                                        </div>
-                                                        <div class="brand-center">
-                                                            <div class="tab-content">
-                                                                @foreach ($brands as $index => $brand)
-                                                                    <div id="brand{{ $brand->id }}"
-                                                                        class="tab-pane fade {{ $loop->first ? 'in active' : '' }}">
-                                                                        @if ($brand->background_image)
-                                                                            <img src="{{ asset('storage/' . $brand->background_image) }}"
-                                                                                class="img-responsive"
-                                                                                alt="{{ $brand->name }}"
-                                                                                style="width: 100%; height: auto;">
-                                                                        @endif
-                                                                        <div class="brand-info">
-                                                                            @if ($brand->description)
-                                                                                <p class="brand-desc">
-                                                                                    {{ $brand->description }}</p>
-                                                                            @endif
-                                                                            @if ($brand->link)
-                                                                                <a href="{{ $brand->link }}"
-                                                                                    class="smooth shop-now">SHOP NOW</a>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                        <div class="brand-left brand-right">
-                                                            <ul class="nav nav-tabs">
-                                                                @foreach ($rightBrands as $index => $brand)
-                                                                    <li>
-                                                                        <a data-toggle="tab"
-                                                                            href="#brand{{ $brand->id }}">
-                                                                            @if ($brand->logo)
-                                                                                <img src="{{ asset('storage/' . $brand->logo) }}"
-                                                                                    class="img-responsive"
-                                                                                    alt="{{ $brand->name }}">
-                                                                            @else
-                                                                                <span class="text-center"
-                                                                                    style="display:block; padding:15px; font-weight:bold;">{{ $brand->name }}</span>
-                                                                            @endif
-                                                                        </a>
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
-                                                        </div>
-                                                    @else
-                                                        <!-- Fallback -->
-                                                        <div class="brand-left">
-                                                            <ul class="nav nav-tabs">
-                                                                <li class="brand-title-box">
-                                                                    <h3 class="brand-title featured-title">
-                                                                        <span>
-                                                                            FEATURED <span>BRANDS</span>
-                                                                        </span>
-                                                                    </h3>
-                                                                </li>
-                                                                <li class="active">
-                                                                    <a data-toggle="tab" href="#brand1">
-                                                                        <img src="{{ asset('frontend/image/catalog/demo/brand/brand-5.jpg') }}"
-                                                                            class="img-responsive" alt="">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a data-toggle="tab" href="#brand2">
-                                                                        <img src="{{ asset('frontend/image/catalog/demo/brand/brand-6.jpg') }}"
-                                                                            class="img-responsive" alt="">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a data-toggle="tab" href="#brand3">
-                                                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand1.png') }}"
-                                                                            class="img-responsive" alt="">
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <div class="brand-center">
-                                                            <div class="tab-content">
-                                                                <div id="brand1" class="tab-pane fade in active">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand-bg.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                    <div class="brand-info">
-                                                                        <p class="brand-desc">Nokia Corporation is a
-                                                                            Finnish multinational communications and
-                                                                            information technology company.</p>
-                                                                        <a href="#" class="smooth shop-now">SHOP
-                                                                            NOW</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div id="brand2" class="tab-pane fade">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand-bg.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                    <div class="brand-info">
-                                                                        <p class="brand-desc">Nokia Corporation is a
-                                                                            Finnish multinational communications and
-                                                                            information technology company.</p>
-                                                                        <a href="#" class="smooth shop-now">SHOP
-                                                                            NOW</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div id="brand3" class="tab-pane fade">
-                                                                    <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand-bg.png') }}"
-                                                                        class="img-responsive" alt="">
-                                                                    <div class="brand-info">
-                                                                        <p class="brand-desc">Nokia Corporation is a
-                                                                            Finnish multinational communications and
-                                                                            information technology company.</p>
-                                                                        <a href="#" class="smooth shop-now">SHOP
-                                                                            NOW</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="brand-left brand-right">
-                                                            <ul class="nav nav-tabs">
-                                                                <li>
-                                                                    <a data-toggle="tab" href="#brand4">
-                                                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand3.png') }}"
-                                                                            class="img-responsive" alt="">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a data-toggle="tab" href="#brand5">
-                                                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand4.png') }}"
-                                                                            class="img-responsive" alt="">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a data-toggle="tab" href="#brand6">
-                                                                        <img src="{{ asset('frontend/image/catalog/demo/slider/home1/brand5.png') }}"
-                                                                            class="img-responsive" alt="">
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- //BRAND -->
 
                                         <!-- FOOTER -->
 
