@@ -6,12 +6,24 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
+    private function getCartQuery()
+    {
+        if (Auth::check()) {
+            return Cart::where('user_id', Auth::id());
+        }
+        
+        // Ensure session is started and has an ID
+        $sessionId = Session::getId();
+        return Cart::where('session_id', $sessionId);
+    }
+
     public function index()
     {
-        $carts = Cart::with('product')->where('user_id', Auth::id())->get();
+        $carts = $this->getCartQuery()->with('product')->get();
         return view('frontend.cart', compact('carts'));
     }
 
@@ -24,7 +36,7 @@ class CartController extends Controller
 
         $product = Product::findOrFail($request->product_id);
         
-        $cart = Cart::where('user_id', Auth::id())
+        $cart = $this->getCartQuery()
             ->where('product_id', $product->id)
             ->first();
 
@@ -33,7 +45,8 @@ class CartController extends Controller
             $cart->save();
         } else {
             Cart::create([
-                'user_id' => Auth::id(),
+                'user_id' => Auth::check() ? Auth::id() : null,
+                'session_id' => Auth::check() ? null : Session::getId(),
                 'product_id' => $product->id,
                 'quantity' => $request->quantity
             ]);
@@ -44,7 +57,7 @@ class CartController extends Controller
 
     public function remove($id)
     {
-        $cart = Cart::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
+        $cart = $this->getCartQuery()->where('id', $id)->firstOrFail();
         $cart->delete();
 
         return redirect()->route('cart.index')->with('success', 'Produk dihapus dari keranjang.');

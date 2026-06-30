@@ -20,5 +20,6 @@ class Setting extends Model
         'youtube_url',
         'copyright_text',
         'app_download_image',
+        'sales_whatsapp_numbers',
     ];
 }

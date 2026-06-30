@@ -20,6 +20,7 @@ use App\Http\Controllers\CheckoutController;
 // FRONTEND ROUTES
 // =============================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/livechat', [HomeController::class, 'livechat'])->name('livechat');
 
 // Frontend Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -31,12 +32,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Product Detail
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
-// Cart & Checkout (require login)
-Route::middleware('auth')->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+// Cart Routes (accessible to guests)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
+// Checkout (require login)
+Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/checkout/success/{invoice}', [CheckoutController::class, 'success'])->name('checkout.success');

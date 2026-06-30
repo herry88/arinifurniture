@@ -25,7 +25,14 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->boolean('remember'))) {
+            $oldSessionId = $request->session()->getId();
             $request->session()->regenerate();
+            
+            \App\Models\Cart::where('session_id', $oldSessionId)->update([
+                'user_id' => Auth::id(),
+                'session_id' => null
+            ]);
+
             return redirect()->intended(route('home'))->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
         }
 
@@ -57,7 +64,14 @@ class AuthController extends Controller
             'role_id'  => null,
         ]);
 
+        $oldSessionId = $request->session()->getId();
+
         Auth::login($user);
+        
+        \App\Models\Cart::where('session_id', $oldSessionId)->update([
+            'user_id' => Auth::id(),
+            'session_id' => null
+        ]);
 
         return redirect()->route('home')->with('success', 'Pendaftaran berhasil! Selamat datang, ' . $user->name . '!');
     }

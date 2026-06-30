@@ -28,22 +28,15 @@
     <link href="{{ asset('frontend/css/themecss/so_sociallogin.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend/css/themecss/so_searchpro.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend/css/themecss/so_megamenu.css') }}" rel="stylesheet">
-    <link href="{{ asset('frontend/css/themecss/so-categories.css') }}" rel="stylesheet">
-    <link href="{{ asset('frontend/css/themecss/so-listing-tabs.css') }}" rel="stylesheet">
-    <link href="{{ asset('frontend/css/themecss/so-category-slider.css') }}" rel="stylesheet">
-    <link href="{{ asset('frontend/css/themecss/so-newletter-popup.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend/css/footer/footer3.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend/css/header/header3.css') }}" rel="stylesheet">
     <link id="color_scheme" href="{{ asset('frontend/css/home3.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend/css/responsive.css') }}" rel="stylesheet">
-    <!-- <link href="{{ asset('frontend/css/quickview/quickview.css') }}" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/daneden/animate.css/v3.1.0/animate.min.css">
+
     <!-- Google web fonts
  ============================================ -->
-    <link href="https://fonts.googleapis.com/css?family=Poppins:700,400,600,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
-    <style type="text/css">
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
+    <!-- Custom Elegant Theme Overrides (must be last) -->
+    <link href="{{ asset('frontend/css/custom-elegant.css') }}" rel="stylesheet">

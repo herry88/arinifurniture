@@ -44,6 +44,7 @@ class SettingController extends Controller
             'youtube_url' => 'nullable|url|max:255',
             'copyright_text' => 'nullable|string',
             'app_download_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'sales_whatsapp_numbers' => 'nullable|string',
         ]);
 
         $data = $request->except(['app_download_image']);

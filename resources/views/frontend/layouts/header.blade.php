@@ -165,7 +165,8 @@
                             <div class="header-hotline">
                                 <div class="item">
                                     <p>
-                                        <a href="#" class="smooth" title="">
+                                        <a href="{{ route('livechat') }}" target="_blank" class="smooth"
+                                            title="Live Chat">
                                             Start
                                             <span>LIVE CHAT</span>
                                         </a>
@@ -288,9 +289,10 @@
                     </div>
                     <div class="cart">
                         @php
-                            $cartItems = Auth::check()
-                                ? \App\Models\Cart::with('product')->where('user_id', Auth::id())->get()
-                                : collect();
+                            $cartQuery = Auth::check()
+                                ? \App\Models\Cart::where('user_id', Auth::id())
+                                : \App\Models\Cart::where('session_id', session()->getId());
+                            $cartItems = $cartQuery->with('product')->get();
                             $cartCount = $cartItems->count();
                             $cartTotal = $cartItems->sum(function ($item) {
                                 return ($item->product->discount_price ?? $item->product->price) * $item->quantity;
@@ -305,11 +307,11 @@
                             <p class="cart-title">KERANJANG</p>
                         </a>
                         <ul class="dropdown-menu shopping-cart">
-                            <li class="shopping-cart-title clearfix">
-                                <label>Produk</label>
-                                <label>Harga</label>
-                            </li>
                             @if ($cartCount > 0)
+                                <li class="shopping-cart-title clearfix">
+                                    <label>Produk</label>
+                                    <label>Harga</label>
+                                </li>
                                 <li class="product-item">
                                     <table class="table cart-table">
                                         <tbody>
@@ -356,13 +358,13 @@
                                         title="">CHECKOUT</a>
                                 </li>
                             @else
-                                <li style="padding:20px; text-align:center; color:#9a8a7a; font-size:13px;">
-                                    <i class="fa fa-shopping-cart"
-                                        style="font-size:24px; display:block; margin-bottom:8px; color:#e8e0d5;"></i>
-                                    Keranjang Anda kosong
+                                <li style="padding:40px 20px; text-align:center; color:#9a8a7a; font-size:14px; background-color: #fff;">
+                                    <i class="fa fa-shopping-basket" style="font-size:40px; display:block; margin-bottom:15px; color:#e8e0d5;"></i>
+                                    <strong>Keranjang Anda masih kosong</strong>
+                                    <p style="margin-top:5px; font-size:12px; color:#bbb;">Silakan jelajahi produk kami dan temukan furnitur idaman Anda.</p>
                                 </li>
-                                <li class="shopping-cart-checkout">
-                                    <a href="{{ route('home') }}" class="smooth" title="">BELANJA</a>
+                                <li class="shopping-cart-checkout" style="background-color: #f9f9f9; text-align: center; padding: 15px;">
+                                    <a href="{{ route('home') }}" class="smooth" title="" style="display: inline-block; padding: 10px 30px; background-color: #79a693; color: white; border-radius: 3px; font-weight: bold; text-transform: uppercase;">Mulai Belanja</a>
                                 </li>
                             @endif
                         </ul>
