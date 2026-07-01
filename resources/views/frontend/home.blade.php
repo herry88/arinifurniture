@@ -134,32 +134,39 @@
                 <p class="elegant-subtitle">Discover our latest premium furniture collections</p>
                 <div class="elegant-divider"></div>
             </div>
-            
+
             <div class="row">
                 @foreach ($latestProducts->take(8) as $product)
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <div class="elegant-product-card">
                             <div class="elegant-product-image">
                                 <a href="{{ route('product.show', $product->slug) }}">
-                                    <img src="{{ $product->galleries->first() ? asset('storage/' . $product->galleries->first()->image) : asset('frontend/image/catalog/demo/products/product1.jpg') }}" alt="{{ $product->name }}">
+                                    <img src="{{ $product->galleries->first() ? asset('storage/' . $product->galleries->first()->image) : asset('frontend/image/catalog/demo/products/product1.jpg') }}"
+                                        alt="{{ $product->name }}">
                                 </a>
                                 <div class="elegant-product-actions">
-                                    <form action="{{ route('cart.add') }}" method="POST" style="display:inline-block; margin:0; width:100%;">
+                                    <form action="{{ route('cart.add') }}" method="POST"
+                                        style="display:inline-block; margin:0; width:100%;">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="elegant-btn-add"><i class="fa fa-shopping-cart"></i> ADD TO CART</button>
+                                        <button type="submit" class="elegant-btn-add"><i
+                                                class="fa fa-shopping-cart"></i> ADD TO CART</button>
                                     </form>
                                 </div>
                             </div>
                             <div class="elegant-product-info text-center">
-                                <h4 class="product-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h4>
+                                <h4 class="product-title"><a
+                                        href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h4>
                                 <div class="product-price">
                                     @if ($product->discount_price)
-                                        <span class="price-new">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</span>
-                                        <span class="price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        <span class="price-new">Rp
+                                            {{ number_format($product->discount_price, 0, ',', '.') }}</span>
+                                        <span class="price-old">Rp
+                                            {{ number_format($product->price, 0, ',', '.') }}</span>
                                     @else
-                                        <span class="price-new">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        <span class="price-new">Rp
+                                            {{ number_format($product->price, 0, ',', '.') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -178,32 +185,39 @@
                 <p class="elegant-subtitle">Our most loved and highly rated pieces</p>
                 <div class="elegant-divider"></div>
             </div>
-            
+
             <div class="row">
                 @foreach ($featuredProducts->take(8) as $product)
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <div class="elegant-product-card">
                             <div class="elegant-product-image">
                                 <a href="{{ route('product.show', $product->slug) }}">
-                                    <img src="{{ $product->galleries->first() ? asset('storage/' . $product->galleries->first()->image) : asset('frontend/image/catalog/demo/products/product1.jpg') }}" alt="{{ $product->name }}">
+                                    <img src="{{ $product->galleries->first() ? asset('storage/' . $product->galleries->first()->image) : asset('frontend/image/catalog/demo/products/product1.jpg') }}"
+                                        alt="{{ $product->name }}">
                                 </a>
                                 <div class="elegant-product-actions">
-                                    <form action="{{ route('cart.add') }}" method="POST" style="display:inline-block; margin:0; width:100%;">
+                                    <form action="{{ route('cart.add') }}" method="POST"
+                                        style="display:inline-block; margin:0; width:100%;">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="elegant-btn-add"><i class="fa fa-shopping-cart"></i> ADD TO CART</button>
+                                        <button type="submit" class="elegant-btn-add"><i
+                                                class="fa fa-shopping-cart"></i> ADD TO CART</button>
                                     </form>
                                 </div>
                             </div>
                             <div class="elegant-product-info text-center">
-                                <h4 class="product-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h4>
+                                <h4 class="product-title"><a
+                                        href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h4>
                                 <div class="product-price">
                                     @if ($product->discount_price)
-                                        <span class="price-new">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</span>
-                                        <span class="price-old">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        <span class="price-new">Rp
+                                            {{ number_format($product->discount_price, 0, ',', '.') }}</span>
+                                        <span class="price-old">Rp
+                                            {{ number_format($product->price, 0, ',', '.') }}</span>
                                     @else
-                                        <span class="price-new">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        <span class="price-new">Rp
+                                            {{ number_format($product->price, 0, ',', '.') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -222,14 +236,15 @@
                 <p class="elegant-subtitle">Find exactly what you need for your home</p>
                 <div class="elegant-divider"></div>
             </div>
-            
+
             <div class="row">
                 @foreach ($categories->take(4) as $category)
                     <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                         <div class="elegant-category-card">
                             <a href="#">
                                 <div class="category-image-wrap">
-                                    <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('frontend/image/catalog/demo/slider/home1/room.png') }}" alt="{{ $category->name }}" class="img-responsive">
+                                    <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('frontend/image/catalog/demo/slider/home1/room.png') }}"
+                                        alt="{{ $category->name }}" class="img-responsive">
                                     <div class="category-overlay">
                                         <h3 class="category-name">{{ $category->name }}</h3>
                                     </div>
