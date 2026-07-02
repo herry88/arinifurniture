@@ -74,6 +74,12 @@
                      </a>
                  </li>
                  <li class="nav-item">
+                     <a href="{{ route('admin.sales.index') }}" class="nav-link {{ request()->routeIs('admin.sales.*') ? 'active' : '' }}">
+                         <i class="nav-icon bi bi-person-badge"></i>
+                         <p>Data Sales</p>
+                     </a>
+                 </li>
+                 <li class="nav-item">
                      <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
                          <i class="nav-icon bi bi-shield-lock"></i>
                          <p>Hak Akses (Roles)</p>

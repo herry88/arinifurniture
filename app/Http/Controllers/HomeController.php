@@ -64,6 +64,22 @@ class HomeController extends Controller
 
     public function livechat()
     {
+        $message = urlencode("Halo, saya tertarik dengan produk furnitur Anda dan ingin bertanya lebih lanjut.");
+
+        // Cek apakah ada session sales_code dari link spesifik sales
+        if (session()->has('sales_code')) {
+            $sales = \App\Models\Sales::where('code', session('sales_code'))->where('is_active', 1)->first();
+            if ($sales) {
+                $waNumber = $sales->whatsapp;
+                // Format nomor jika dimulai dengan 0
+                if(substr($waNumber, 0, 1) == '0') {
+                    $waNumber = '62' . substr($waNumber, 1);
+                }
+                $waUrl = "https://wa.me/{$waNumber}?text={$message}";
+                return redirect()->away($waUrl);
+            }
+        }
+
         // Ambil nomor dari database
         $setting = \App\Models\Setting::first();
         $salesNumbers = [];
@@ -89,6 +105,9 @@ class HomeController extends Controller
 
         // Ambil nomor Sales berdasarkan giliran saat ini
         $assignedNumber = array_values($salesNumbers)[$currentIndex];
+        if(substr($assignedNumber, 0, 1) == '0') {
+            $assignedNumber = '62' . substr($assignedNumber, 1);
+        }
 
         // Hitung giliran berikutnya
         $nextIndex = ($currentIndex + 1) % count($salesNumbers);
@@ -96,8 +115,6 @@ class HomeController extends Controller
         // Simpan giliran berikutnya ke Cache
         \Illuminate\Support\Facades\Cache::put('livechat_sales_index', $nextIndex);
 
-        // Pesan default
-        $message = urlencode("Halo, saya tertarik dengan produk furnitur Anda dan ingin bertanya lebih lanjut.");
         $waUrl = "https://wa.me/{$assignedNumber}?text={$message}";
 
         return redirect()->away($waUrl);
