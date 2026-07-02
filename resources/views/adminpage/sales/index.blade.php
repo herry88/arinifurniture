@@ -48,34 +48,29 @@
                                 </td>
                                 <td><strong>{{ $item->name }}</strong></td>
                                 <td>{{ $item->whatsapp }}</td>
-                                <td><span class="badge bg-label-info">{{ $item->code }}</span></td>
+                                <td><strong>{{ $item->code }}</strong></td>
                                 <td>
                                     @if($item->is_active)
-                                        <span class="badge bg-label-success">Aktif</span>
+                                        <span class="badge bg-success">Aktif</span>
                                     @else
-                                        <span class="badge bg-label-danger">Tidak Aktif</span>
+                                        <span class="badge bg-danger">Tidak Aktif</span>
                                     @endif
                                 </td>
                                 <td>
                                     <a href="{{ url('/sales/' . $item->code) }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat</a>
                                 </td>
                                 <td>
-                                    <div class="dropdown">
-                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{ route('admin.sales.edit', $item->id) }}">
-                                                <i class="bx bx-edit-alt me-1"></i> Edit
-                                            </a>
-                                            <form action="{{ route('admin.sales.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sales ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="bx bx-trash me-1"></i> Hapus
-                                                </button>
-                                            </form>
-                                        </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ route('admin.sales.edit', $item->id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="bx bx-edit-alt"></i> Edit
+                                        </a>
+                                        <form action="{{ route('admin.sales.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sales ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                                <i class="bx bx-trash"></i> Hapus
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

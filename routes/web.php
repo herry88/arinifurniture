@@ -33,6 +33,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Product Detail
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
+// Product Search
+Route::get('/search', [ProductController::class, 'search'])->name('product.search');
+
 // Cart Routes (accessible to guests)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');

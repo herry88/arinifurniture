@@ -178,3 +178,61 @@
 		<div class="back-to-top">
 			<i class="fa fa-angle-up" aria-hidden="true"></i>
 		</div>
+
+		<!-- FLOATING LIVE CHAT WIDGET -->
+		<a href="{{ route('livechat') }}" target="_blank" class="floating-chat-widget" title="Chat dengan kami">
+			<i class="fa fa-whatsapp"></i>
+			<span class="chat-text">Live Chat</span>
+		</a>
+
+		<style>
+		.floating-chat-widget {
+			position: fixed;
+			bottom: 30px;
+			left: 30px;
+			background-color: #25d366;
+			color: white !important;
+			border-radius: 50px;
+			padding: 10px 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+			z-index: 9999;
+			text-decoration: none !important;
+			transition: all 0.3s ease;
+			font-family: 'Poppins', sans-serif;
+		}
+
+		.floating-chat-widget:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+			color: white;
+		}
+
+		.floating-chat-widget i {
+			font-size: 24px;
+		}
+
+		.floating-chat-widget .chat-text {
+			font-size: 15px;
+			font-weight: 600;
+		}
+
+		/* Responsive styling for mobile */
+		@media (max-width: 575px) {
+			.floating-chat-widget {
+				bottom: 20px;
+				left: 20px;
+				padding: 15px;
+				border-radius: 50%;
+			}
+			.floating-chat-widget .chat-text {
+				display: none;
+			}
+			.floating-chat-widget i {
+				font-size: 28px;
+			}
+		}
+		</style>
+		<!-- //FLOATING LIVE CHAT WIDGET -->

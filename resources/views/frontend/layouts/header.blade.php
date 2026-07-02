@@ -278,7 +278,7 @@
                     </div>
                     <div class="search-form">
                         <button type="button" class="smooth search-form-btn"><i class="fa fa-search"></i></button>
-                        <form action="{{ route('home') }}" method="get">
+                        <form action="{{ route('product.search') }}" method="get">
                             <div class="icon">
                                 <i class="fa fa-search" aria-hidden="true"></i>
                             </div>
